@@ -100,8 +100,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 self.activityIndicator.stopAnimating()
             }
         })
-
-
         
         if !checkCredentialsValidity() {
             let alert = UIAlertController(title: "ERROR", message: "Une condition n'a pas été respectée", preferredStyle: .alert)
@@ -135,10 +133,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             sleep(3)
         }
         
-
-
     }
-    
     
 }
 struct User {
