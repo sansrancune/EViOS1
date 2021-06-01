@@ -44,12 +44,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
         passwordVisibilityButton.setBackgroundImage(openEyeImage, for: .normal)
         passwordTextField.isSecureTextEntry = true
         
+        //first keyboard exit option - return
         usernameTextField.delegate = self
         passwordTextField.delegate = self
         
         let closeKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(closeKeyboard))
         view.addGestureRecognizer(closeKeyboardTap)
         
+        //default keyboards
         usernameTextField.keyboardType = .emailAddress
         passwordTextField.keyboardType = .URL
 
@@ -77,8 +79,52 @@ class ViewController: UIViewController, UITextFieldDelegate {
         iconClick = !iconClick
     }
     
-    @IBAction func tapOnLogin(_ sender: Any) {
+    func checkCredentialsValidity() -> Bool {
+        var isValid = true
+        if let text = usernameTextField.text, text.isEmpty{
+            isValid = false
+        }
+        if let text = passwordTextField.text, text.isEmpty{
+            isValid = false
+        }
+        if let text = usernameTextField.text, !text.contains("@"){
+            isValid = false
+        }
+        if let text = passwordTextField.text, text.count < 4{
+            isValid = false
+        }
+        return isValid
     }
     
+    @IBAction func loginTapped(_ sender: Any) {
+        
+        
+        if !checkCredentialsValidity() {
+            let alert = UIAlertController(title: "ERROR", message: "Une condition n'a pas été respectée", preferredStyle: .alert)
+            addAlertAction(alert: alert, name: "OK")
+            self.present(alert, animated: true, completion: nil)
+
+        }
+        else if let text = usernameTextField.text, newsletterSwitch.isOn {
+            let alert = UIAlertController(title: "Bienvenue \(text) !", message: "Vous vous êtes inscrit à la newsletter !", preferredStyle: .alert)
+           addAlertAction(alert: alert, name: "Merci !")
+            self.present(alert, animated: true, completion: nil)
+
+        }
+        else if let text = usernameTextField.text{
+            let alert = UIAlertController(title: "Bienvenue \(text) !", message: "Vous vous n'êtes pas inscrit à la newsletter !", preferredStyle: .alert)
+            addAlertAction(alert: alert, name: "Merci !")
+            self.present(alert, animated: true, completion: nil)
+
+        }
+
+    }
+    
+    func addAlertAction(alert: UIAlertController, name: String){
+        alert.addAction(UIAlertAction(title: "\(name)", style: .default, handler: nil))
+            }
+    
 }
+
+
 
