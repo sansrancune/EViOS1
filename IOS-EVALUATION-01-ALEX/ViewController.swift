@@ -19,6 +19,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var openEyeImage = UIImage (named: "eye_on_icon")
     @IBOutlet var closedEyeImage = UIImage (named: "eye_off_icon")
     var iconClick = true
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    typealias LoadingCompletionHandler = (User) -> ()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,12 +83,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func checkCredentialsValidity() -> Bool {
         var isValid = true
-        if let text = usernameTextField.text, text.isEmpty{
-            isValid = false
-        }
-        if let text = passwordTextField.text, text.isEmpty{
-            isValid = false
-        }
         if let text = usernameTextField.text, !text.contains("@"){
             isValid = false
         }
@@ -98,6 +94,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func loginTapped(_ sender: Any) {
         
+        networkCalling( completionHandler: {currentNetworkCall in
+            
+            DispatchQueue.main.async {
+                self.activityIndicator.stopAnimating()
+            }
+        })
+
+
         
         if !checkCredentialsValidity() {
             let alert = UIAlertController(title: "ERROR", message: "Une condition n'a pas été respectée", preferredStyle: .alert)
@@ -115,16 +119,32 @@ class ViewController: UIViewController, UITextFieldDelegate {
             let alert = UIAlertController(title: "Bienvenue \(text) !", message: "Vous vous n'êtes pas inscrit à la newsletter !", preferredStyle: .alert)
             addAlertAction(alert: alert, name: "Merci !")
             self.present(alert, animated: true, completion: nil)
-
         }
-
     }
     
     func addAlertAction(alert: UIAlertController, name: String){
         alert.addAction(UIAlertAction(title: "\(name)", style: .default, handler: nil))
-            }
+    }
+    
+   
+    func networkCalling(completionHandler: @escaping LoadingCompletionHandler){
+        
+        activityIndicator.startAnimating()
+        
+        DispatchQueue.global(qos: .default).async {
+            sleep(3)
+        }
+        
+
+
+    }
+    
     
 }
-
+struct User {
+    var login: String
+    var password: String
+    var newsletterSubscribed: Bool
+}
 
 
